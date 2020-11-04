@@ -16,14 +16,20 @@
   <script src="js/scripts.js"></script>
   <h1>Todo List</h1>
   <table id="list">
-      <tr>
-          <th>Task</th>
-          <th>Operation</th>
-      </tr>
+    <tr>
+      <th class="taskcolumn">Task</th>
+      <th class="opcolumn">Operation</th>
+    </tr>
+    <!-- default row for css -->
+    <tr id="69">
+      <td class="taskcolumn">default task</td>
+      <td class="opcolumn"><input type="button" value="Remove" onclick="deleteRow(69)"> <input type="button" value="Edit" onclick="editRow(69)"></td>
+    </tr>
+    <!-- end default row -->
   </table>
-  <form>
-      <input type="text" name="newtask" id="newtask" onkeydown="lookforenter(this)">
-      <input type="button" value="Add Task" onclick="addTask(document.getElementById('newtask').value)">
+  <form id="newtaskform">
+    <input type="text" name="newtask" id="newtask" onkeydown="lookforenter(this)">
+    <input type="button" value="Add Task" onclick="addTask(document.getElementById('newtask').value)">
   </form>
 </body>
 </html>

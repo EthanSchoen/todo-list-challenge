@@ -11,20 +11,34 @@ function addTask(taskName) {
 
 // User inputed task name
     var newtask = document.createElement("td");
+    newtask.setAttribute("class", "taskcolumn");
     newtask.innerHTML = taskName;
     row.appendChild(newtask);
 
 // Add buttons for task operations
     var operations = document.createElement("td");
+    operations.setAttribute("class", "opcolumn");
+// delete button
     var deleteButton = document.createElement("input");
     deleteButton.setAttribute("type", "button");
-    deleteButton.setAttribute("value", "Delete Task");
+    deleteButton.setAttribute("value", "Remove");
     deleteButton.setAttribute("onclick", "deleteRow("+UID+")");
+// edit button
+    var editButton = document.createElement("input");
+    editButton.setAttribute("type", "button");
+    editButton.setAttribute("value", "Edit");
+    editButton.setAttribute("onclick", "editRow("+UID+")");
+// finish up row
     operations.appendChild(deleteButton);
+    operations.appendChild(editButton);
     row.appendChild(operations);
 
 // Clear input field
     document.getElementById('newtask').value = "";
+}
+
+function editRow(rowNumber) {
+    document.getElementById(rowNumber).getElementsByClassName("taskcolumn")[0].innerHTML = "edited";
 }
 
 function deleteRow(rowNumber){
