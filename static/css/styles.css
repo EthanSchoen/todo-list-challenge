@@ -1,6 +1,6 @@
 body {
     margin: 40px auto;
-    max-width: 650px;
+    max-width: 950px;
     line-height: 1.6;
     font-size:18px;
     padding: 0 10px;
@@ -39,14 +39,12 @@ td.taskcolumn {
     text-align: left;
 }
 
-.opcolumn {
-    width: 150px;
-}
 .opcolumn input[type=button] {
     font-size:18px;
 }
 
 .editTaskInput {
+    margin-left: 3px;
+    width: calc(100% - 15px);
     font-size:18px;
-    width: calc(100% - 10px);
 }
