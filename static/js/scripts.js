@@ -9,10 +9,12 @@ function addTask(taskName) {
 
     row.setAttribute("id", UID); // give each row an id number
 
+// User inputed task name
     var newtask = document.createElement("td");
     newtask.innerHTML = taskName;
     row.appendChild(newtask);
 
+// Add buttons for task operations
     var operations = document.createElement("td");
     var deleteButton = document.createElement("input");
     deleteButton.setAttribute("type", "button");
@@ -21,6 +23,7 @@ function addTask(taskName) {
     operations.appendChild(deleteButton);
     row.appendChild(operations);
 
+// Clear input field
     document.getElementById('newtask').value = "";
 }
 
