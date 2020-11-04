@@ -1,4 +1,4 @@
 # todo-list-challenge
 
-To Run:
-    -Open index.html in a browser.
+To Run:<br>
+  - Open static/index.html in a browser.
