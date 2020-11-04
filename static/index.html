@@ -20,15 +20,9 @@
       <th class="taskcolumn">Task</th>
       <th class="opcolumn">Operation</th>
     </tr>
-    <!-- default row for css -->
-    <tr id="69">
-      <td class="taskcolumn">default task</td>
-      <td class="opcolumn"><input type="button" value="Remove" onclick="deleteRow(69)"> <input type="button" value="Edit" onclick="editRow(69)"></td>
-    </tr>
-    <!-- end default row -->
   </table>
   <form id="newtaskform">
-    <input type="text" name="newtask" id="newtask" onkeydown="lookforenter(this)">
+    <input type="text" name="newtask" id="newtask" onkeydown="newTaskEnter(this)">
     <input type="button" value="Add Task" onclick="addTask(document.getElementById('newtask').value)">
   </form>
 </body>

@@ -21,16 +21,14 @@ th, td {
     word-wrap: break-word;
 }
 
-form input {
-    height: 20px;
-}
-
 form input[type=text] {
-    width: calc(100% - 90px);
+    width: calc(100% - 110px);
+    font-size:18px;
 }
 
 form input[type=button] {
-    width: 70px;
+    width: 90px;
+    font-size:18px;
 }
 
 #newtaskform {
@@ -42,5 +40,13 @@ td.taskcolumn {
 }
 
 .opcolumn {
-    width: 120px;
+    width: 150px;
+}
+.opcolumn input[type=button] {
+    font-size:18px;
+}
+
+.editTaskInput {
+    font-size:18px;
+    width: calc(100% - 10px);
 }
