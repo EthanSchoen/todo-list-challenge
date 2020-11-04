@@ -1,4 +1,6 @@
 # todo-list-challenge
 
 To Run:<br>
-  - Open static/index.html in a browser.
+  - Install flask
+  - run app.py
+  - open localhost:5000
