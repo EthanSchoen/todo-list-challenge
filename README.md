@@ -1,2 +1,4 @@
 # todo-list-challenge
-todo-list front end challenge for Jahnel Group
+
+To Run:
+    -Open index.html in a browser.

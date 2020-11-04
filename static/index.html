@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Todo-List</title>
+  <meta name="description" content="Keep track of what you need todo">
+  <meta name="author" content="Ethan Schoen">
+
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+
+</head>
+
+<body>
+  <script src="js/scripts.js"></script>
+  <h1>Todo List</h1>
+  <table id="list">
+      <tr>
+          <th>Task</th>
+          <th>Operation</th>
+      </tr>
+  </table>
+  <form>
+      <input type="text" name="newtask" id="newtask" onkeydown="lookforenter(this)">
+      <input type="button" value="Add Task" onclick="addTask(document.getElementById('newtask').value)">
+  </form>
+</body>
+</html>
