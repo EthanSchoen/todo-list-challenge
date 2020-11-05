@@ -105,6 +105,6 @@ function editTaskEnter(ele, rowUID) {
 function newTaskEnter(ele) {
     if(event.key === 'Enter') {
         event.preventDefault();
-        addTask(document.getElementById('newtask').value);
+        addTask(document.getElementById('newtask', null).value);
     }
 }
