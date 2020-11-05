@@ -31,11 +31,13 @@
     </tr>
     {% for t in tasks %}
     <tr id="{{ t.id }}">
-      <td> <input type="checkbox" class="taskCheckBox" {{ 'checked="checked"' if t.complete else "" }}> </td>
-      <td class="taskcolumn"> {{ t.task }} </td>
+      <td> <input type="checkbox" class="taskCheckBox" {{ 'checked=checked' if t.complete }} onclick="taskCheck({{ t.id }})"> </td>
+      <td class="taskcolumn" {{ 'style=text-decoration:line-through;' if t.complete }}>{{ t.task }}</td>
       <td class="opcolumn">
         <input type="button" value="Edit" class="editButton" onclick="editRow({{ t.id }})">
+        <!-- <form action="/remove" method="POST" id="removetask"> -->
         <input type="button" value="Remove" class="removeButton" onclick="deleteRow({{ t.id }})">
+        <!-- </form> -->
       </td>
     </tr>
     {% endfor %}

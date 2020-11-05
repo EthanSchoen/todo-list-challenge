@@ -31,19 +31,46 @@ function editDone(rowUID) {
     button.setAttribute("class", "editButton");
     button.setAttribute("onclick", "editRow("+rowUID+")");
     button.setAttribute("value", "Edit");
+
+// POST to server to edit by ID
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/edit", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        ID: rowUID,
+        task: task.innerHTML
+    }));
 }
 
 function deleteRow(rowUID){
+// remove row in html
     document.getElementById(rowUID).remove();
+// POST to server to delete task by ID
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/remove", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        ID: rowUID
+    }));
 }
 
 function taskCheck(rowUID) {
     var task = document.getElementById(rowUID).getElementsByClassName("taskcolumn")[0];
+    var taskComplete = false;
     if (task.hasAttribute("style")) {
         task.removeAttribute("style");
     } else {
         task.setAttribute("style", "text-decoration: line-through;");
+        taskComplete = true;
     }
+// POST to server to update completed field
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/complete", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        ID: rowUID,
+        complete: taskComplete
+    }));
 }
 
 function editTaskEnter(ele, rowUID) {

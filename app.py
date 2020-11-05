@@ -27,5 +27,27 @@ def add():
         db.session.commit()
     return redirect(url_for('index'))
 
+@app.route('/remove', methods=['POST'])
+def remove():
+    Tasks.query.filter_by(id=request.get_json()['ID']).delete()
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/edit', methods=['POST'])
+def edit():
+    print(request.get_json())
+    taskID = request.get_json()['ID']
+    editedTask = request.get_json()['task']
+    Tasks.query.filter_by(id=taskID).first().task = editedTask
+    db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/complete', methods=['POST'])
+def complete():
+    print(request.get_json())
+    Tasks.query.filter_by(id=request.get_json()['ID']).first().complete = request.get_json()['complete']
+    db.session.commit()
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run()
