@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -14,16 +14,17 @@ class Tasks(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.task
 
-taskList = ['sample task']
-
 @app.route('/', methods=['GET'])
 def index():
+    taskList = Tasks.query.all()
     return render_template('index.html', tasks=taskList)
 
 @app.route('/add', methods=['POST'])
 def add():
-    taskList.append(request.form['newtask'])
-    return render_template('index.html', tasks=taskList)
+    newTask = Tasks(task=request.form['newtask'])
+    db.session.add(newTask)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run()

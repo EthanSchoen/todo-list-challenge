@@ -26,10 +26,10 @@
       <th class="opcolumn">Operation</th>
     </tr>
     {% for t in tasks %}
-    <tr id="{{ loop.index }}">
-      <td><input type="checkbox" class="taskCheckBox"></td>
-      <td>{{ t }}</td>
-      <td> ops yo </td>
+    <tr id="{{ t.id }}">
+      <td> <input type="checkbox" class="taskCheckBox" {{ 'checked="checked"' if t.complete else "" }}> </td>
+      <td class="taskcolumn"> {{ t.task }} </td>
+      <td class="opcolumn"> <input type="button" value="Edit" class="editButton" onclick="editRow({{ t.id }})"> <input type="button" value="Remove" class="removeButton" onclick="deleteRow({{ t.id }})"> </td>
     </tr>
     {% endfor %}
   </table>
