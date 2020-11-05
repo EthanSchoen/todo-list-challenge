@@ -1,8 +1,9 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/todo.db'
+app = Flask(__name__, template_folder='core/templates', static_folder='core/static')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///core/data/todo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 db = SQLAlchemy(app)
 
