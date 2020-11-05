@@ -15,6 +15,10 @@
 <body>
   <script src="/static/js/scripts.js"></script>
   <h1 style="text-decoration: underline;">Todo List</h1>
+  <form action="/add" method="POST" id="newtaskform">
+    <input type="text" name="newtask" id="newtask">
+    <input type="submit" value="Add Task">
+  </form>
   <table id="list">
     <colgroup>
       <col span="1" style="width: 25px;">
@@ -29,13 +33,12 @@
     <tr id="{{ t.id }}">
       <td> <input type="checkbox" class="taskCheckBox" {{ 'checked="checked"' if t.complete else "" }}> </td>
       <td class="taskcolumn"> {{ t.task }} </td>
-      <td class="opcolumn"> <input type="button" value="Edit" class="editButton" onclick="editRow({{ t.id }})"> <input type="button" value="Remove" class="removeButton" onclick="deleteRow({{ t.id }})"> </td>
+      <td class="opcolumn">
+        <input type="button" value="Edit" class="editButton" onclick="editRow({{ t.id }})">
+        <input type="button" value="Remove" class="removeButton" onclick="deleteRow({{ t.id }})">
+      </td>
     </tr>
     {% endfor %}
   </table>
-  <form action="/add" method="POST" id="newtaskform">
-    <input type="text" name="newtask" id="newtask">  <!-- onkeydown="newTaskEnter(this)" -->
-    <input type="submit" value="Add Task">  <!-- onclick="addTask(document.getElementById('newtask', null).value)"> -->
-  </form>
 </body>
 </html>

@@ -21,9 +21,10 @@ def index():
 
 @app.route('/add', methods=['POST'])
 def add():
-    newTask = Tasks(task=request.form['newtask'])
-    db.session.add(newTask)
-    db.session.commit()
+    if not request.form['newtask'].strip() == '':
+        newTask = Tasks(task=request.form['newtask'])
+        db.session.add(newTask)
+        db.session.commit()
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
