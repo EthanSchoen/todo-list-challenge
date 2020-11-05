@@ -17,7 +17,7 @@ class Tasks(db.Model):
 @app.route('/', methods=['GET'])
 def index():
     taskList = Tasks.query.all()
-    return render_template('index.html', tasks=taskList)
+    return render_template('index.html.j2', tasks=taskList)
 
 @app.route('/add', methods=['POST'])
 def add():
@@ -35,7 +35,6 @@ def remove():
 
 @app.route('/edit', methods=['POST'])
 def edit():
-    print(request.get_json())
     taskID = request.get_json()['ID']
     editedTask = request.get_json()['task']
     Tasks.query.filter_by(id=taskID).first().task = editedTask
