@@ -28,14 +28,17 @@ def tearDownClass():
     flask_app.config['TESTING'] = True
     flask_app.config['WTF_CSRF_ENABLED'] = False
     flask_app.config['DEBUG'] = False
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../todo_app/data/test_todo.db'
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../todo_app/data/test_users.db'
+    flask_app.config['SQLALCHEMY_BINDS'] = { 'tasks' : 'sqlite:///../todo_app/data/test_tasks.db' }
+    flask_app.config['USER_ENABLE_EMAIL'] = False
 
     yield
 
     # executed after all tests
     # post_test_init_db(flask_app.test_client())
     try:
-        os.remove(os.path.abspath('todo_app/data/test_todo.db'))
+        os.remove(os.path.abspath('todo_app/data/test_users.db'))
+        os.remove(os.path.abspath('todo_app/data/test_tasks.db'))
     except OSError:
-        print('could not delete test_todo.db')
+        print('could not delete test databases')
         pass

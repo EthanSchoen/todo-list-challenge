@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'thisisasecretkeyiguess'
+app.config['SECRET_KEY'] = 'ifidonthavesomethinghereitdoesntwork'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/users.db'
 app.config['SQLALCHEMY_BINDS'] = { 'tasks' : 'sqlite:///data/tasks.db' }
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -36,7 +36,6 @@ user_manager = UserManager(db_adapter, app)
 @app.route('/', methods=['GET'])
 @login_required
 def index():
-    # taskList = Tasks.query.all()
     taskList = Tasks.query.filter_by(user_id=session['_user_id']).all()
     return render_template('index.html.j2', tasks=taskList, userid=session['_user_id'])
 

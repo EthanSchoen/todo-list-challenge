@@ -12,7 +12,17 @@ def test_404(client):
 
 def test_index(client):
     res = client.get('/')
+    assert res.status_code == 302
+    res = client.post('/user/register', json={
+        'username': 'test_username', 'password': 'Password123'
+    }, follow_redirects=False)
+    assert res.status_code == 302
+    res = client.get('/')
     assert res.status_code == 200
+
+    print(res.get_data(as_text=True))
+    assert False
+    
 
 def test_add_task(client):
     add_task_helper(client, 1, 'This is the first task to be added.', True)
