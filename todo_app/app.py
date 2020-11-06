@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/todo.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/test_todo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 db = SQLAlchemy(app)
 
@@ -45,7 +44,6 @@ def edit():
 
 @app.route('/complete', methods=['POST'])
 def complete():
-    print(request.get_json())
     Tasks.query.filter_by(id=request.get_json()['ID']).first().complete = request.get_json()['complete']
     db.session.commit()
     return redirect(url_for('index'))

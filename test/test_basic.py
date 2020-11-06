@@ -34,25 +34,52 @@ def test_remove_task(client):
     add_task(client, 'task 2')
     add_task(client, 'task 3')
     add_task(client, 'task 4')
+
+    # remove task 1 (ID = 1)
     res = client.post('/remove', json={ 'ID': 1 }, follow_redirects=True)
     assert res.status_code == 200
     assert Tasks.query.filter_by(task='task 1').all() == []
     assert not Tasks.query.filter_by(task='task 2').all() == []
     assert not Tasks.query.filter_by(task='task 3').all() == []
     assert not Tasks.query.filter_by(task='task 4').all() == []
+
+    # remove task 3 (ID = 3)
     res = client.post('/remove', json={ 'ID': 3 }, follow_redirects=True)
     assert res.status_code == 200
     assert Tasks.query.filter_by(task='task 3').all() == []
 
 def test_edit_task(client):
-    add_task(client, 'this is the task to be added.')
-    res = client.post('/edit', json={ 'ID': 1, 'task': 'The task is now edited'}, follow_redirects=True)
+    add_task(client, 'task 1')
+
+    # edit task (ID = 1)
+    res = client.post('/edit', json={ 'ID': 1, 'task': 'task edited'}, follow_redirects=False)
+    assert res.status_code == 302
+    res = client.get('/')
     assert res.status_code == 200
 
+    # check if task is edited
+    assert not Tasks.query.filter_by(task='task edited').all() == []
+    assert res.get_data(as_text=True).find("task edited") > -1
+
+    # confirm pre-edited task can't be found
+    assert Tasks.query.filter_by(task='task 1').all() == []
+    assert res.get_data(as_text=True).find("task 1") == -1
+
 def test_complete_task(client):
-    add_task(client, 'this is the task to be added.')
-    res = client.post('/complete', json={ 'ID': 1, 'complete': True }, follow_redirects=True)
+    res = add_task(client, 'task 1')
+    # make sure task starts out not completed
+    assert Tasks.query.filter_by(complete=True).all() == []
+    assert res.get_data(as_text=True).find('style=text-decoration:line-through;') == -1
+
+    # edit task (ID = 1)
+    res = client.post('/complete', json={ 'ID': 1, 'complete': True }, follow_redirects=False)
+    assert res.status_code == 302
+    res = client.get('/')
     assert res.status_code == 200
+
+    # check if task is completed
+    assert not Tasks.query.filter_by(id=1, complete=True).all() == []
+    assert res.get_data(as_text=True).find('style=text-decoration:line-through;') > -1
 
 #########################
 #### Helper Methods #####
@@ -66,6 +93,8 @@ def add_task(client, value):
     assert res.status_code == 200
     return res
 
+# method to add tasks to test db if uncommented in conftest.py so URI in app.py can be
+#   set to test_todo.db to open app with data made by tests
 def post_test_init_db(client):
     client.post('/add', data=dict(
         newtask = 'Here is task 1'
