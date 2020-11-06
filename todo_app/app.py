@@ -7,7 +7,7 @@ from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisisasecretkeyiguess'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/users.db'
-app.config['SQLALCHEMY_BINDS'] = { 'todo' : 'sqlite:///data/todo.db' }
+app.config['SQLALCHEMY_BINDS'] = { 'tasks' : 'sqlite:///data/tasks.db' }
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CSRF_ENABLED'] = True
 app.config['USER_ENABLE_EMAIL'] = False
@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
     userTasks = db.relationship('Tasks', backref='user', lazy=True)
 
 class Tasks(db.Model):
-    __bind_key__ = 'todo'
+    __bind_key__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     task = db.Column(db.String(200), unique=False, nullable=False)
