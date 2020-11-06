@@ -1,6 +1,7 @@
 import os
 import pytest
 from todo_app.app import db, app as flask_app
+from .test_basic import post_test_init_db
 
 @pytest.fixture
 def app():
@@ -21,7 +22,7 @@ def support():
     # executed after each test
     db.drop_all()
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 def tearDownClass():
     # executed before all tests
     flask_app.config['TESTING'] = True
@@ -32,8 +33,10 @@ def tearDownClass():
     yield
 
     # executed after all tests
-    try:
-        os.remove(os.path.abspath('todo_app/data/test_todo.db'))
-    except OSError:
-        print('could not delete test_todo.db')
-        pass
+    db.create_all()
+    post_test_init_db(flask_app.test_client())
+    # try:
+    #     os.remove(os.path.abspath('todo_app/data/test_todo.db'))
+    # except OSError:
+    #     print('could not delete test_todo.db')
+    #     pass
