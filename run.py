@@ -1,4 +1,6 @@
 import os
 
-os.system('python -m test.test_basic')
+os.system('py.test')
+print()
+print("Loading Todo app...")
 os.system('python todo_app/app.py')
