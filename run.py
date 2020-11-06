@@ -2,9 +2,8 @@ import os
 from todo_app.app import db
 
 # create data folder if it doesn't exist
-if os.getcwd().endswith('todo-list-challenge'):
-    if not os.path.isdir('todo_app/data'):
-        os.mkdir('todo_app/data')
+if not os.path.isdir('todo_app/data'):
+    os.mkdir('todo_app/data')
 
 # unit tests
 os.system('py.test')
