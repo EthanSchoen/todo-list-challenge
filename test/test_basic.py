@@ -1,5 +1,6 @@
 import json
 from todo_app.app import Tasks
+from sqlalchemy import MetaData
 
 
 #########################
@@ -29,9 +30,19 @@ def add_task_helper(client, id,  value, is_valid):
         assert res.get_data(as_text=True).find(value) > -1
 
 def test_remove_task(client):
-    add_task(client, 'this is the task to be added.')
+    add_task(client, 'task 1')
+    add_task(client, 'task 2')
+    add_task(client, 'task 3')
+    add_task(client, 'task 4')
     res = client.post('/remove', json={ 'ID': 1 }, follow_redirects=True)
     assert res.status_code == 200
+    assert Tasks.query.filter_by(task='task 1').all() == []
+    assert not Tasks.query.filter_by(task='task 2').all() == []
+    assert not Tasks.query.filter_by(task='task 3').all() == []
+    assert not Tasks.query.filter_by(task='task 4').all() == []
+    res = client.post('/remove', json={ 'ID': 3 }, follow_redirects=True)
+    assert res.status_code == 200
+    assert Tasks.query.filter_by(task='task 3').all() == []
 
 def test_edit_task(client):
     add_task(client, 'this is the task to be added.')
