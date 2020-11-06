@@ -8,12 +8,12 @@
   <meta name="author" content="Ethan Schoen">
   <meta name="description" content="Keep track of what you need todo">
 
-  <link rel="stylesheet" href="/static/css/styles.css?v=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
 </head>
 
 <body>
-  <script src="/static/js/scripts.js"></script>
+  <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
   <h1 style="text-decoration: underline;">Todo List</h1>
   <h2>{{ userid }}</h2>
   <form action="/add" method="POST" id="newtaskform">

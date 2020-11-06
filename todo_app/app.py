@@ -1,4 +1,6 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import login_required, UserManager, UserMixin, SQLAlchemyAdapter
 
@@ -62,7 +64,6 @@ def edit():
 
 @app.route('/complete', methods=['POST'])
 def complete():
-    print(request.get_json())
     Tasks.query.filter_by(id=request.get_json()['ID']).first().complete = request.get_json()['complete']
     db.session.commit()
     return redirect(url_for('index'))
