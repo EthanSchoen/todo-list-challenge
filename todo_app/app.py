@@ -40,6 +40,7 @@ def index():
     return render_template('index.html.j2', tasks=taskList, userid=session['_user_id'])
 
 @app.route('/add', methods=['POST'])
+@login_required
 def add():
     if not request.form['newtask'].strip() == '':
         newTask = Tasks(user_id=session['_user_id'], task=request.form['newtask'])
@@ -48,12 +49,14 @@ def add():
     return redirect(url_for('index'))
 
 @app.route('/remove', methods=['POST'])
+@login_required
 def remove():
     Tasks.query.filter_by(id=request.get_json()['ID']).delete()
     db.session.commit()
     return redirect(url_for('index'))
 
 @app.route('/edit', methods=['POST'])
+@login_required
 def edit():
     taskID = request.get_json()['ID']
     editedTask = request.get_json()['task']
@@ -62,6 +65,7 @@ def edit():
     return redirect(url_for('index'))
 
 @app.route('/complete', methods=['POST'])
+@login_required
 def complete():
     Tasks.query.filter_by(id=request.get_json()['ID']).first().complete = request.get_json()['complete']
     db.session.commit()

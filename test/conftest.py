@@ -37,8 +37,9 @@ def tearDownClass():
     # executed after all tests
     # post_test_init_db(flask_app.test_client())
     try:
-        os.remove(os.path.abspath('todo_app/data/test_users.db'))
-        os.remove(os.path.abspath('todo_app/data/test_tasks.db'))
+        # os.remove(os.path.abspath('todo_app/data/test_users.db'))
+        # os.remove(os.path.abspath('todo_app/data/test_tasks.db'))
+        pass
     except OSError:
         print('could not delete test databases')
         pass
