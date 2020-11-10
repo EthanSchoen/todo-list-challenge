@@ -37,7 +37,7 @@ function editDone(rowUID) {
     xhr.open("POST", "/edit", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
-        ID: rowUID,
+        id: rowUID,
         task: task.innerHTML
     }));
 }
@@ -50,7 +50,7 @@ function deleteRow(rowUID){
     xhr.open("POST", "/remove", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
-        ID: rowUID
+        id: rowUID
     }));
 }
 
@@ -68,7 +68,7 @@ function taskCheck(rowUID) {
     xhr.open("POST", "/complete", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
-        ID: rowUID,
+        id: rowUID,
         complete: taskComplete
     }));
 }
