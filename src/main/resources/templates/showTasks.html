@@ -15,12 +15,10 @@
 <body>
   <script th:src="@{/js/tasks.js}"></script>
   <h1 style="text-decoration: underline;">Todo List</h1>
-
-  <!-- <form action="/add" method="POST" id="newtaskform">
-    <input type="text" name="newtask" id="newtask">
+  <form action="/add" method="POST" id="newtaskform">
+    <input type="text" name="task" id="newtask">
     <input type="submit" value="Add Task">
-  </form> -->
-
+  </form>
   <!-- <form action="/user/sign-out" method="GET" id="signout">
     <input type="submit" value="Sign Out">
   </form> -->
@@ -36,15 +34,11 @@
       <th class="opcolumn">Operation</th>
     </tr>
     <tr th:each="task : ${tasks}" th:id="${task.id}">
-        <!-- <td> <input type="checkbox" class="taskCheckBox" {{ 'checked=checked' if t.complete }} onclick="taskCheck(${task.id})"> </td>
-        <td class="taskcolumn" {{ 'style=text-decoration:line-through;' if t.complete }}>{{ t.task }}</td> -->
         <td> <input type="checkbox" class="taskCheckBox" th:checked="${task.complete}" th:attr="onclick=|taskCheck(${task.id})|"> </td>
         <td class="taskcolumn" th:style="${task.complete ? 'text-decoration:line-through;' : '' }"><span th:text="${task.task}"> Task </span></td>
         <td class="opcolumn">
             <input type="button" value="Edit" class="editButton" th:attr="onclick=|editRow(${task.id})|">
-            <!-- <form action="/remove" method="POST" id="removetask"> -->
             <input type="button" value="Remove" class="removeButton" th:attr="onclick=|deleteRow(${task.id})|">
-            <!-- </form> -->
         </td>
     </tr>
   </table>

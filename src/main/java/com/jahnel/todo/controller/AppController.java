@@ -1,6 +1,8 @@
 package com.jahnel.todo.controller;
 
 import com.jahnel.todo.model.Task;
+import com.jahnel.todo.repository.TaskRepository;
+import com.jahnel.todo.bean.TaskForm;
 import com.jahnel.todo.service.ITaskService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class AppController {
 
     @Autowired
     private ITaskService taskService;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @GetMapping("/")
     public String index() {
@@ -36,8 +41,24 @@ public class AppController {
     }
 
     @PostMapping("/add")
-    public String addTask(Model model) {
+    public String addTask(TaskForm task, Model model) {
+        System.out.println(task.getTask());
+        taskRepository.save(new Task(task.getTask(), false));
         return "redirect:tasks";
     }
     
+    @PostMapping("/remove")
+    public String removeTask() {
+        return "redirect:tasks";
+    }
+
+    @PostMapping("/edit")
+    public String editTask() {
+        return "redirect:tasks";
+    }
+
+    @PostMapping("/complete")
+    public String completeTask() {
+        return "redirect:tasks";
+    }
 }
