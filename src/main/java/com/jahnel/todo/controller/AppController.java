@@ -58,14 +58,18 @@ public class AppController {
     @PostMapping("/edit")
     public String editTask(@RequestBody String json) {
         Map<String, Object> result = JsonParserFactory.getJsonParser().parseMap(json);
-        // taskRepository.
+        Task target = taskRepository.findById(((Number) result.get("id")).longValue()).get();
+        target.setTask(result.get("task").toString());
+        taskRepository.save(target);
         return "redirect:tasks";
     }
 
     @PostMapping("/complete")
     public String completeTask(@RequestBody String json) {
         Map<String, Object> result = JsonParserFactory.getJsonParser().parseMap(json);
-        
+        Task target = taskRepository.findById(((Number) result.get("id")).longValue()).get();
+        target.setComplete(!target.getComplete());
+        taskRepository.save(target);
         return "redirect:tasks";
     }
 }
