@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Todo-List</title>
+  <meta name="author" content="Ethan Schoen">
+  <meta name="description" content="Keep track of what you need todo">
+
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"> -->
+
+</head>
+
+<body>
+  <!-- <script src="{{ url_for('static', filename='js/scripts.js') }}"></script> -->
+  <h1 style="text-decoration: underline;">Todo List</h1>
+  <form action="/add" method="POST" id="newtaskform">
+    <input type="text" name="newtask" id="newtask">
+    <input type="submit" value="Add Task">
+  </form>
+  <!-- <form action="/user/sign-out" method="GET" id="signout">
+    <input type="submit" value="Sign Out">
+  </form> -->
+  <br>
+  <table id="list">
+    <colgroup>
+      <col span="1" style="width: 25px;">
+      <col span="1" style="width: 80%;width: -webkit-calc(100% - 170px);width: -moz-calc(100% - 170px);width: calc(100% - 170px);">
+      <col span="1" style="width: 160px;">
+    </colgroup>
+    <tr>
+      <th class="taskcolumn" colspan="2">Task</th>
+      <th class="opcolumn">Operation</th>
+    </tr>
+    <!-- {% for t in tasks %}
+    <tr id="{{ t.id }}">
+      <td> <input type="checkbox" class="taskCheckBox" {{ 'checked=checked' if t.complete }} onclick="taskCheck({{ t.id }})"> </td>
+      <td class="taskcolumn" {{ 'style=text-decoration:line-through;' if t.complete }}>{{ t.task }}</td>
+      <td class="opcolumn">
+        <input type="button" value="Edit" class="editButton" onclick="editRow({{ t.id }})">
+        <input type="button" value="Remove" class="removeButton" onclick="deleteRow({{ t.id }})">
+      </td>
+    </tr>
+    {% endfor %} -->
+  </table>
+</body>
+</html>
