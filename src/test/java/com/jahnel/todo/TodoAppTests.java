@@ -9,12 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.lang.ProcessBuilder.Redirect;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -31,7 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,7 +52,7 @@ public class TodoAppTests {
     }
 
     @Test
-    void loadTask() throws Exception {
+    void loadTasks() throws Exception {
         this.mvc.perform(get("/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<th class=\"opcolumn\">Operation</th>")));
@@ -73,20 +68,15 @@ public class TodoAppTests {
 
     @Test
     void removeTask() throws Exception {
-        ArrayList<String> tasks = new ArrayList<String>(Arrays.asList(
-            "This is test task 0",
-            "This is test task 1",
-            "This is test task 2",
-            "This is test task 3",
-            "This is test task 4",
-            "This is test task 5"
-        ));
+        ArrayList<String> tasks = new ArrayList<String>();
+        for( int i = 0; i < 10; i++ ){
+            tasks.add("This is test task " + i);
+        }
         HashMap<String, Integer> idMap = new HashMap<String, Integer>();
         for( String t : tasks) {
             idMap = addTaskString(t);
         }
 
-        System.out.println(idMap);
         Random r = new Random( 123 );  // so tests are repeatable
         int s = tasks.size(), i;
         while(s != 0) {
@@ -95,18 +85,29 @@ public class TodoAppTests {
             assert (idMap.size() == s-1);
             tasks.remove(i);
             s = idMap.size();
-            System.out.println(idMap);
         }
     }
 
     @Test
     void editTask() throws Exception {
-        // this.mvc.perform(get("/tasks")).andDo(print()).andExpect(status().isOk());
+        addTaskString("Test task 0");
+        HashMap<String, Integer> idMap = addTaskString("Test task 1");
+        Map<String, Object> tmp = Map.of("id", idMap.get("Test task 1"), "task", "Test task 1 new string");
+
+        this.mvc.perform(post("/edit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(tmp)))
+                .andExpect(redirectedUrl("tasks"))
+                .andExpect(status().is3xxRedirection());
+
+        this.mvc.perform(get("/tasks"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Test task 0")))
+                .andExpect(content().string(containsString("Test task 1 new string")));
     }
 
     @Test
     void completeTask() throws Exception {
-        // this.mvc.perform(get("/tasks")).andDo(print()).andExpect(status().isOk());
     }
 
     HashMap<String, Integer> readTasks(ByteArrayOutputStream baos) {
@@ -152,7 +153,7 @@ public class TodoAppTests {
         ResultActions temp = this.mvc.perform(get("/tasks")).andExpect(status().isOk()).andDo(print(outStream));
         for( String t : tasks ) {
             if( t != target) {
-                // temp.andExpect(content().string(containsString(t)));
+                temp.andExpect(content().string(containsString(t)));
             }
         }
         return readTasks(outStream);
