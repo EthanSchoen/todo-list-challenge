@@ -4,9 +4,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -108,6 +106,12 @@ public class TodoAppTests {
 
     @Test
     void completeTask() throws Exception {
+        addTaskString("Test task 0");
+        HashMap<String, Integer> idMap = addTaskString("Test task 1");
+        completeTaskHelper(idMap, "Test task 1", true);
+        completeTaskHelper(idMap, "Test task 0", true);
+        completeTaskHelper(idMap, "Test task 0", false);
+        completeTaskHelper(idMap, "Test task 1", false);
     }
 
     HashMap<String, Integer> readTasks(ByteArrayOutputStream baos) {
@@ -157,5 +161,26 @@ public class TodoAppTests {
             }
         }
         return readTasks(outStream);
+    }
+
+    void completeTaskHelper(HashMap<String, Integer> idMap, String target, boolean expected) throws Exception{
+        Map<String, Object> tmp = Map.of("id", idMap.get(target));
+        this.mvc.perform(post("/complete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(tmp)))
+                .andExpect(redirectedUrl("tasks"))
+                .andExpect(status().is3xxRedirection());
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.mvc.perform(get("/tasks"))
+                .andExpect(status().isOk())
+                .andDo(print(baos));
+
+        String output = baos.toString();
+        output = output.substring(output.indexOf("<html"), output.indexOf("</html>"));
+        int temp = output.indexOf("<tr id=\"" + idMap.get(target) + "\">");
+        output = output.substring(temp, output.indexOf("</tr>", temp));
+
+        assert ((output.indexOf("style=\"text-decoration:line-through;\"") == -1) ^ expected);
     }
 }
