@@ -4,6 +4,7 @@ import com.jahnel.todo.model.Task;
 import com.jahnel.todo.repository.TaskRepository;
 import com.jahnel.todo.service.ITaskService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.util.MultiValueMap;
 
 @Controller
@@ -30,16 +34,22 @@ public class AppController {
         return "index";
     }
 
-    // @GetMapping("/error")
-    // public String error() {
-    //     return "error";
-    // }
+    @GetMapping("/lists")
+    public String taskLists() {
+        return "lists";
+    }
+
+    @GetMapping("/user")
+    @ResponseBody
+    public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
+        return Collections.singletonMap("name", principal.getAttribute("name"));
+    }
 
     @GetMapping("/tasks")
     public String findTasks(Model model) {
         var tasks = (List<Task>) taskService.findAll();
         model.addAttribute("tasks", tasks);
-        return "showTasks";
+        return "tasks";
     }
 
     @PostMapping("/add")

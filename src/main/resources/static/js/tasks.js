@@ -32,10 +32,15 @@ function editDone(rowUID) {
     button.setAttribute("onclick", "editRow("+rowUID+")");
     button.setAttribute("value", "Edit");
 
+
+
+
 // POST to server to edit by ID
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/edit", true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader(header, token);
     xhr.send(JSON.stringify({
         id: rowUID,
         task: task.innerHTML
@@ -46,9 +51,11 @@ function deleteRow(rowUID){
 // remove row in html
     document.getElementById(rowUID).remove();
 // POST to server to delete task by ID
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/remove", true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader(header, token);
     xhr.send(JSON.stringify({
         id: rowUID
     }));
@@ -64,9 +71,11 @@ function taskCheck(rowUID) {
         taskComplete = true;
     }
 // POST to server to update completed field
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/complete", true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader(header, token);
     xhr.send(JSON.stringify({
         id: rowUID,
         complete: taskComplete

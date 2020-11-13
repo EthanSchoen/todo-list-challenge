@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User Lists</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+        <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+        <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+        <script th:src="@{/js/scripts.js}"></script>
+        <script>
+            var showList = function (rowUID){
+                // GET to server to delete task by ID
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "/tasks", true);
+                xhr.setRequestHeader(header, token);
+                xhr.send(JSON.stringify({
+                    id: rowUID
+                }));
+            }
+        </script>
+    </head>
+    <body>
+        <div><a href="/tasks">Show tasks</a></div>
+        <br>
+        <table id="task-list">
+            <colgroup>
+                <col span="1" style="width: calc(100% - 170px);">
+                <col span="1" style="width: 100px;">
+            </colgroup>
+            <tr>
+                <th class="table-title" colspan="2">Lists</th>
+            </tr>
+            <tr th:each="list : ${lists}" th:id="${list.id}">
+                <td class="listcolumn" th:text="${list.name}"> </td>
+                <td class="opcolumn">
+                    <input type="button" value="Show List" class="selectButton" th:attr="onclick=|showList(${list.id})|">
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        <button onClick="logout()" class="btn btn-primary">Logout</button>
+    </body>
+</html>

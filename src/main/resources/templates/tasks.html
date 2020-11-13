@@ -7,15 +7,22 @@
   <title>Todo-List</title>
   <meta name="author" content="Ethan Schoen">
   <meta name="description" content="Keep track of what you need todo">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-  <link rel="stylesheet" th:href="@{/css/tasks.css}">
 
+  <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/tasks.css}">
+  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+  <script th:src="@{/js/tasks.js}"></script>
+  <script th:src="@{/js/scripts.js}"></script>
 </head>
 
 <body>
-  <script th:src="@{/js/tasks.js}"></script>
-  <h1 style="text-decoration: underline;">Todo List</h1>
-  <form action="/add" method="POST" id="newtaskform">
+  <h1 th:utext="${tasks[0].id}">Todo List</h1>
+  <form th:action="@{/add}" method="POST" id="newtaskform">
     <input type="text" name="task" id="newtask">
     <input type="submit" value="Add Task">
   </form>
@@ -24,7 +31,7 @@
     <colgroup>
       <col span="1" style="width: 25px;">
       <col span="1" style="width: 80%;width: -webkit-calc(100% - 170px);width: -moz-calc(100% - 170px);width: calc(100% - 170px);">
-      <col span="1" style="width: 160px;">
+      <col span="1" style="width: 170px;">
     </colgroup>
     <tr>
       <th class="taskcolumn" colspan="2">Task</th>
@@ -39,5 +46,7 @@
         </td>
     </tr>
   </table>
+  <br><br>
+  <button onClick="logout()" class="btn btn-primary">Logout</button>
 </body>
 </html>
