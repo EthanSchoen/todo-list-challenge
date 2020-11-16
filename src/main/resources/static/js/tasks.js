@@ -1,32 +1,24 @@
 function editRow(rowUID) {
-// find row
-    var task = document.getElementById(rowUID).getElementsByClassName("taskcolumn")[0];
-    var oldTask = task.innerHTML;
-    task.innerHTML = "";
-
-// replace task with edit field for user to make changes
-    var editField = document.createElement("input");
-    editField.setAttribute("type", "text");
-    editField.setAttribute("value", oldTask);
-    editField.setAttribute("class", "editTaskInput");
-    editField.setAttribute("onkeydown", "editTaskEnter(this, "+rowUID+")")
-    task.appendChild(editField);
-
-// Switch edit button to done button
-    var button = document.getElementById(rowUID).getElementsByClassName("editButton")[0];
-    button.setAttribute("class", "btn btn-secondary doneButton");
-    button.setAttribute("onclick", "editDone("+rowUID+")");
-    button.setAttribute("value", "Done");
+    // find row
+    var task = $("#"+rowUID+" .taskcolumn");
+    var oldTask = task.html();
+    // replace task with edit field for user to make changes
+    task.html("<input type='text' value='"+oldTask+"' class='editTaskInput' onkeydown='editTaskEnter(this, "+rowUID+")'>");
+    // Switch edit button to done button
+    var button = $("#"+rowUID+" .opcolumn .editButton");
+    button.attr("class", "btn btn-secondary doneButton");
+    button.attr("onclick", "editDone("+rowUID+")");
+    button.attr("value", "Done");
 }
 
 function editDone(rowUID) {
-// find row
-    var task = document.getElementById(rowUID).getElementsByClassName("taskcolumn")[0];
-
-// POST to server to edit by ID
+    // find row
+    var taskVal = $("#"+rowUID+" .taskcolumn .editTaskInput").val();
+    // collect info for POST
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     var lstId = $("meta[name='listId']").attr("content");
+    // POST to server to edit by ID
     $.ajax({
         type: "POST",
         url: "/editTask",
@@ -34,7 +26,7 @@ function editDone(rowUID) {
             request.setRequestHeader(header, token);
         },
         contentType: 'application/json',
-        data: JSON.stringify( {taskId: rowUID, task: task.getElementsByClassName("editTaskInput")[0].value, listId: lstId} ),
+        data: JSON.stringify( {taskId: rowUID, task: taskVal, listId: lstId} ),
         error: function(data) {
             console.log(data);
         },
@@ -45,10 +37,11 @@ function editDone(rowUID) {
 }
 
 function deleteRow(rowUID){
-// POST to server to delete task by ID
+    // CSRF token
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     var lstId = $("meta[name='listId']").attr("content");
+    // POST to server to delete task by ID
     $.ajax({
         type: "POST",
         url: "/removeTask",
@@ -56,7 +49,10 @@ function deleteRow(rowUID){
             request.setRequestHeader(header, token);
         },
         contentType: 'application/json',
-        data: JSON.stringify( {taskId: rowUID, listId: lstId} ),
+        data: JSON.stringify({
+            taskId: rowUID,
+            listId: $("meta[name='listId']").attr("content")
+        }),
         error: function(data) {
             console.log(data);
         },
@@ -67,13 +63,10 @@ function deleteRow(rowUID){
 }
 
 function taskCheck(rowUID) {
-    var task = document.getElementById(rowUID).getElementsByClassName("taskcolumn")[0];
-    var taskComplete = task.hasAttribute("style");
-// POST to server to update completed field
+    // CSRF token
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
-    var lstId = $("meta[name='listId']").attr("content");
-
+    // POST to server to update completed field
     $.ajax({
         type: "POST",
         url: "/completeTask",
@@ -81,7 +74,11 @@ function taskCheck(rowUID) {
             request.setRequestHeader(header, token);
         },
         contentType: 'application/json',
-        data: JSON.stringify( {taskId: rowUID, complete: taskComplete, listId: lstId} ),
+        data: JSON.stringify({
+            taskId: rowUID,
+            complete: $('#'+rowUID+' .taskcolumn').is("[style]"),
+            listId: $("meta[name='listId']").attr("content")
+        }),
         error: function(data) {
             console.log(data);
         },
