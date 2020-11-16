@@ -9,7 +9,7 @@
   <meta name="description" content="Keep track of what you need todo">
   <meta name="_csrf" th:content="${_csrf.token}"/>
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-  <meta name="listId" th:content="${list.getListId()}"
+  <meta name="listId" th:content="${list.getListId()}"/>
 
 
   <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
@@ -24,6 +24,7 @@
 <body>
   <h1 th:utext="${list.getName()}">Todo List</h1>
   <form th:action="@{/addTask}" method="POST" id="newtaskform">
+    <input type="hidden" name="listId" th:value="${list.getListId()}">
     <input type="text" name="task" id="newtask">
     <input class="btn btn-secondary" type="submit" value="Add Task">
   </form>
@@ -31,19 +32,18 @@
   <table id="list">
     <colgroup>
       <col span="1" style="width: 25px;">
-      <col span="1" style="width: 80%;width: -webkit-calc(100% - 170px);width: -moz-calc(100% - 170px);width: calc(100% - 170px);">
-      <col span="1" style="width: 170px;">
+      <col span="1" style="width: 100%;">
+      <col span="1" style="width: 190px;">
     </colgroup>
     <tr>
-      <th class="taskcolumn" colspan="2">Task</th>
-      <th class="opcolumn">Operation</th>
+      <th class="taskcolumn" colspan="3">Tasks</th>
     </tr>
-    <tr th:each="task : ${tasks}" th:id="${task.taskId}">
-        <td> <input type="checkbox" class="taskCheckBox" th:checked="${task.complete}" th:attr="onclick=|taskCheck(${task.taskId})|"> </td>
+    <tr th:each="task : ${tasks}" th:id="${task.getTaskId()}">
+        <td> <input type="checkbox" class="taskCheckBox" th:checked="${task.complete}" th:attr="onclick=|taskCheck(${task.getTaskId()})|"> </td>
         <td class="taskcolumn" th:style="${task.complete ? 'text-decoration:line-through;' : '' }" th:text="${task.task}"> </td>
         <td class="opcolumn">
-            <input type="button" value="Edit" class="editButton" th:attr="onclick=|editRow(${task.taskId})|">
-            <input type="button" value="Remove" class="removeButton" th:attr="onclick=|deleteRow(${task.taskId})|">
+            <input type="button" value="Edit" class="btn btn-secondary editButton" th:attr="onclick=|editRow(${task.getTaskId()})|">
+            <input type="button" value="Remove" class="btn btn-secondary removeButton" th:attr="onclick=|deleteRow(${task.getTaskId()})|">
         </td>
     </tr>
   </table>

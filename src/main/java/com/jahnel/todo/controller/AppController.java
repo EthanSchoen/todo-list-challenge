@@ -48,23 +48,29 @@ public class AppController {
     @GetMapping("/user")
     @ResponseBody
     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
+        // Pass User's name for display in page
         return Collections.singletonMap("name", principal.getAttribute("name"));
     }
 
     @GetMapping("/lists")
     public String taskLists(Model model) {
+        // get userid and use it to get User's lists
         String usrId = SecurityContextHolder.getContext().getAuthentication().getName();
         List<TaskList> lists = listService.findAllUser(usrId);
+        // pass data to model
         model.addAttribute("lists", lists);
         return "lists";
     }
 
     @GetMapping("/tasks")
     public String findTasks(@RequestParam String listId, Model model) {
+        // Use listId from URL param to validate User owns list
         TaskList list = listService.validateUserAndGetList(listId);
+        // return access denied page if listId is invalid for user
         if( list == null ){ return "accessDenied"; }
+        // Get list of tasks for requested list
         var tasks = (List<Task>) taskService.findAllInList(list);
-
+        // pass data to model
         model.addAttribute("list", list);
         model.addAttribute("tasks", tasks);
         return "tasks";
@@ -72,50 +78,81 @@ public class AppController {
 
     @PostMapping("/addList")
     public String addList(@RequestBody MultiValueMap<String,String> form) {
+        // Get User's ID
         String usrId = SecurityContextHolder.getContext().getAuthentication().getName();
+        // Create new list from User ID and form data
         listRepository.save(new TaskList(form.get("listName").get(0), usrId));
         return "redirect:lists";
     }
 
     @PostMapping("/removeList")
     public String removeList(@RequestBody String json) {
+        // Parse JSON request
         Map<String, Object> result = JsonParserFactory.getJsonParser().parseMap(json);
-
+        // Use listId from JSON data to validate User owns list
         TaskList list = listService.validateUserAndGetList(result.get("listId").toString());
+        // return access denied page if listId is invalid for user
         if( list == null ){ return "accessDenied"; }
-
+        // delete requested list
         listRepository.deleteById(list.getListId());
         return "redirect:lists";
     }
 
     @PostMapping("/addTask")
     public String addTask(@RequestBody MultiValueMap<String,String> form) {
-        taskRepository.save(new Task(form.get("task").get(0), false));
-        return "redirect:tasks";
+        // Use listId from form data to validate User owns list
+        TaskList list = listService.validateUserAndGetList(form.get("listId").get(0).toString());
+        // return access denied page if listId is invalid for user
+        if( list == null ){ return "accessDenied"; }
+        // create new task for user on requested list
+        taskRepository.save(new Task(form.get("task").get(0), false, list));
+        return "redirect:tasks?listId=" + list.getListId();
     }
     
     @PostMapping("/removeTask")
     public String removeTask(@RequestBody String json) {
+        // Parse JSON request
         Map<String, Object> result = JsonParserFactory.getJsonParser().parseMap(json);
-        taskRepository.deleteById(((Number) result.get("id")).longValue());
-        return "redirect:tasks";
+        // Use listId from JSON data to validate User owns list
+        TaskList list = listService.validateUserAndGetList(result.get("listId").toString());
+        // return access denied page if listId is invalid for user
+        if( list == null ){ return "accessDenied"; }
+        // delete requested task
+        taskRepository.deleteById(((Number) result.get("taskId")).longValue());
+        return "redirect:tasks?listId=" + list.getListId();
     }
 
     @PostMapping("/editTask")
     public String editTask(@RequestBody String json) {
+        // Parse JSON request
         Map<String, Object> result = JsonParserFactory.getJsonParser().parseMap(json);
-        Task target = taskRepository.findById(((Number) result.get("id")).longValue()).get();
+        // Use listId from JSON data to validate User owns list
+        TaskList list = listService.validateUserAndGetList(result.get("listId").toString());
+        // return access denied page if listId is invalid for user
+        if( list == null ){ return "accessDenied"; }
+        // find requested task
+        Task target = taskRepository.findById(((Number) result.get("taskId")).longValue()).get();
+        // edit task according to JSON data
         target.setTask(result.get("task").toString());
+        // commit changes to database
         taskRepository.save(target);
-        return "redirect:tasks";
+        return "redirect:tasks?listId=" + list.getListId();
     }
 
     @PostMapping("/completeTask")
     public String completeTask(@RequestBody String json) {
+        // Parse JSON request
         Map<String, Object> result = JsonParserFactory.getJsonParser().parseMap(json);
-        Task target = taskRepository.findById(((Number) result.get("id")).longValue()).get();
+        // Use listId from JSON data to validate User owns list
+        TaskList list = listService.validateUserAndGetList(result.get("listId").toString());
+        // return access denied page if listId is invalid for user
+        if( list == null ){ return "accessDenied"; }
+        // find target task
+        Task target = taskRepository.findById(((Number) result.get("taskId")).longValue()).get();
+        // mark task as opposite of current state
         target.setComplete(!target.getComplete());
+        // commit changes to database
         taskRepository.save(target);
-        return "redirect:tasks";
+        return "redirect:tasks?listId=" + list.getListId();
     }
 }

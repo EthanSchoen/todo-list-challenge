@@ -2,6 +2,7 @@ package com.jahnel.todo.service;
 
 import com.jahnel.todo.model.TaskList;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.jahnel.todo.model.Task;
@@ -23,9 +24,10 @@ public class TaskService implements ITaskService {
     @Override
     public List<Task> findAllInList(TaskList list) {
         List<Task> tasks = (List<Task>) repository.findAll();
-        for( Task t : tasks ){
+        for( Iterator<Task> it = tasks.iterator(); it.hasNext(); ){
+            Task t = it.next();
             if( !t.getTaskList().equals(list) ){
-                tasks.remove(t);
+                it.remove();
             }
         }
         return tasks;

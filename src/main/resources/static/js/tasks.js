@@ -1,7 +1,6 @@
 function editRow(rowUID) {
 // find row
     var task = document.getElementById(rowUID).getElementsByClassName("taskcolumn")[0];
-
     var oldTask = task.innerHTML;
     task.innerHTML = "";
 
@@ -15,7 +14,7 @@ function editRow(rowUID) {
 
 // Switch edit button to done button
     var button = document.getElementById(rowUID).getElementsByClassName("editButton")[0];
-    button.setAttribute("class", "doneButton");
+    button.setAttribute("class", "btn btn-secondary doneButton");
     button.setAttribute("onclick", "editDone("+rowUID+")");
     button.setAttribute("value", "Done");
 }
@@ -23,63 +22,73 @@ function editRow(rowUID) {
 function editDone(rowUID) {
 // find row
     var task = document.getElementById(rowUID).getElementsByClassName("taskcolumn")[0];
-// set html to input
-    task.innerHTML = task.getElementsByClassName("editTaskInput")[0].value
-
-// switch button from done back to edit
-    var button = document.getElementById(rowUID).getElementsByClassName("doneButton")[0];
-    button.setAttribute("class", "editButton");
-    button.setAttribute("onclick", "editRow("+rowUID+")");
-    button.setAttribute("value", "Edit");
-
-
-
 
 // POST to server to edit by ID
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/editTask", true);
-    xhr.setRequestHeader(header, token);
-    xhr.send(JSON.stringify({
-        id: rowUID,
-        task: task.innerHTML
-    }));
+    var lstId = $("meta[name='listId']").attr("content");
+    $.ajax({
+        type: "POST",
+        url: "/editTask",
+        beforeSend: function(request) {
+            request.setRequestHeader(header, token);
+        },
+        contentType: 'application/json',
+        data: JSON.stringify( {taskId: rowUID, task: task.getElementsByClassName("editTaskInput")[0].value, listId: lstId} ),
+        error: function(data) {
+            console.log(data);
+        },
+        success: function(data){
+            window.location.reload();
+        }
+    });
 }
 
 function deleteRow(rowUID){
-// remove row in html
-    document.getElementById(rowUID).remove();
 // POST to server to delete task by ID
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/removeTask", true);
-    xhr.setRequestHeader(header, token);
-    xhr.send(JSON.stringify({
-        id: rowUID
-    }));
+    var lstId = $("meta[name='listId']").attr("content");
+    $.ajax({
+        type: "POST",
+        url: "/removeTask",
+        beforeSend: function(request) {
+            request.setRequestHeader(header, token);
+        },
+        contentType: 'application/json',
+        data: JSON.stringify( {taskId: rowUID, listId: lstId} ),
+        error: function(data) {
+            console.log(data);
+        },
+        success: function(data){
+            window.location.reload();
+        }
+    });
 }
 
 function taskCheck(rowUID) {
     var task = document.getElementById(rowUID).getElementsByClassName("taskcolumn")[0];
-    var taskComplete = false;
-    if (task.hasAttribute("style")) {
-        task.removeAttribute("style");
-    } else {
-        task.setAttribute("style", "text-decoration: line-through;");
-        taskComplete = true;
-    }
+    var taskComplete = task.hasAttribute("style");
 // POST to server to update completed field
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/completeTask", true);
-    xhr.setRequestHeader(header, token);
-    xhr.send(JSON.stringify({
-        id: rowUID,
-        complete: taskComplete
-    }));
+    var lstId = $("meta[name='listId']").attr("content");
+
+    $.ajax({
+        type: "POST",
+        url: "/completeTask",
+        beforeSend: function(request) {
+            request.setRequestHeader(header, token);
+        },
+        contentType: 'application/json',
+        data: JSON.stringify( {taskId: rowUID, complete: taskComplete, listId: lstId} ),
+        error: function(data) {
+            console.log(data);
+        },
+        success: function(data){
+            window.location.reload();
+        }
+    });
 }
 
 function editTaskEnter(ele, rowUID) {

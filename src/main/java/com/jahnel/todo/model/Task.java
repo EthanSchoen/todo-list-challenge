@@ -40,16 +40,17 @@ public class Task {
         this.complete = complete;
     }
 
-    public Task(String task, boolean complete) {
+    public Task(String task, boolean complete, TaskList list) {
         this.task = task;
         this.complete = complete;
+        this.list = list;
     }
 
-    public Long gettaskId() {
+    public Long getTaskId() {
         return taskId;
     }
 
-    public void settaskId(Long id) {
+    public void setTaskId(Long id) {
         this.taskId = id;
     }
 

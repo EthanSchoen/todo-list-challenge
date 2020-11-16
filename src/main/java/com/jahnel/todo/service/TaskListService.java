@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -22,9 +23,10 @@ public class TaskListService implements ITaskListService {
     @Override
     public List<TaskList> findAllUser(String user) {
         List<TaskList> lists = (List<TaskList>) repository.findAll();
-        for( TaskList l : lists ){
+        for( Iterator<TaskList> it = lists.iterator(); it.hasNext(); ){
+            TaskList l = it.next();
             if( !l.getUser().equals(user) ){
-                lists.remove(l);
+                it.remove();
             }
         }
         return lists;
