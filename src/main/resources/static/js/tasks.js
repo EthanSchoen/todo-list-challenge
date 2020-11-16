@@ -39,7 +39,7 @@ function editDone(rowUID) {
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/edit", true);
+    xhr.open("POST", "/editTask", true);
     xhr.setRequestHeader(header, token);
     xhr.send(JSON.stringify({
         id: rowUID,
@@ -54,7 +54,7 @@ function deleteRow(rowUID){
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/remove", true);
+    xhr.open("POST", "/removeTask", true);
     xhr.setRequestHeader(header, token);
     xhr.send(JSON.stringify({
         id: rowUID
@@ -74,7 +74,7 @@ function taskCheck(rowUID) {
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/complete", true);
+    xhr.open("POST", "/completeTask", true);
     xhr.setRequestHeader(header, token);
     xhr.send(JSON.stringify({
         id: rowUID,

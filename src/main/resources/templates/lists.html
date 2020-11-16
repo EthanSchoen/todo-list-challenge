@@ -8,39 +8,32 @@
 
         <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/lists.css}">
         <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
         <script th:src="@{/js/scripts.js}"></script>
-        <script>
-            var showList = function (rowUID){
-                // GET to server to delete task by ID
-                var token = $("meta[name='_csrf']").attr("content");
-                var header = $("meta[name='_csrf_header']").attr("content");
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "/tasks", true);
-                xhr.setRequestHeader(header, token);
-                xhr.send(JSON.stringify({
-                    id: rowUID
-                }));
-            }
-        </script>
+        <script th:src="@{/js/lists.js}"></script>
     </head>
     <body>
-        <div><a href="/tasks">Show tasks</a></div>
+        <h1>Todo Lists</h1>
         <br>
+        <form th:action="@{/addList}" method="POST" id="newlistform">
+          <input type="text" name="listName" id="newlist">
+          <input class="btn btn-secondary" type="submit" value="Add List">
+        </form>
         <table id="task-list">
             <colgroup>
-                <col span="1" style="width: calc(100% - 170px);">
-                <col span="1" style="width: 100px;">
+                <col span="1" style="width: calc(100% - 175px);">
+                <col span="1" style="width: 175px;">
             </colgroup>
             <tr>
                 <th class="table-title" colspan="2">Lists</th>
             </tr>
-            <tr th:each="list : ${lists}" th:id="${list.id}">
-                <td class="listcolumn" th:text="${list.name}"> </td>
+            <tr th:each="list : ${lists}" th:id="${list.getListId()}">
+                <td class="listcolumn" th:text="${list.getName()}"> </td>
                 <td class="opcolumn">
-                    <input type="button" value="Show" class="selectButton" th:attr="onclick=|showList(${list.id})|">
-                    <input type="button" value="Remove" class="selectButton" th:attr="onclick=|removeList(${list.id})|">
+                    <a class="btn btn-secondary" th:href="|/tasks?listId=${list.getListId()}|" role="button">Show</a>
+                    <button class="btn btn-secondary" th:attr="onclick=|removeList(${list.getListId()})|">Remove</button>
                 </td>
             </tr>
         </table>

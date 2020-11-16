@@ -9,6 +9,7 @@
   <meta name="description" content="Keep track of what you need todo">
   <meta name="_csrf" th:content="${_csrf.token}"/>
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <meta name="listId" th:content="${list.getListId()}"
 
 
   <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
@@ -21,10 +22,10 @@
 </head>
 
 <body>
-  <h1 th:utext="${tasks[0].id}">Todo List</h1>
-  <form th:action="@{/add}" method="POST" id="newtaskform">
+  <h1 th:utext="${list.getName()}">Todo List</h1>
+  <form th:action="@{/addTask}" method="POST" id="newtaskform">
     <input type="text" name="task" id="newtask">
-    <input type="submit" value="Add Task">
+    <input class="btn btn-secondary" type="submit" value="Add Task">
   </form>
   <br>
   <table id="list">
@@ -37,16 +38,17 @@
       <th class="taskcolumn" colspan="2">Task</th>
       <th class="opcolumn">Operation</th>
     </tr>
-    <tr th:each="task : ${tasks}" th:id="${task.id}">
-        <td> <input type="checkbox" class="taskCheckBox" th:checked="${task.complete}" th:attr="onclick=|taskCheck(${task.id})|"> </td>
+    <tr th:each="task : ${tasks}" th:id="${task.taskId}">
+        <td> <input type="checkbox" class="taskCheckBox" th:checked="${task.complete}" th:attr="onclick=|taskCheck(${task.taskId})|"> </td>
         <td class="taskcolumn" th:style="${task.complete ? 'text-decoration:line-through;' : '' }" th:text="${task.task}"> </td>
         <td class="opcolumn">
-            <input type="button" value="Edit" class="editButton" th:attr="onclick=|editRow(${task.id})|">
-            <input type="button" value="Remove" class="removeButton" th:attr="onclick=|deleteRow(${task.id})|">
+            <input type="button" value="Edit" class="editButton" th:attr="onclick=|editRow(${task.taskId})|">
+            <input type="button" value="Remove" class="removeButton" th:attr="onclick=|deleteRow(${task.taskId})|">
         </td>
     </tr>
   </table>
   <br><br>
+  <a class="btn btn-primary" href="/lists" role="button">Back to Lists</a>
   <button onClick="logout()" class="btn btn-primary">Logout</button>
 </body>
 </html>
