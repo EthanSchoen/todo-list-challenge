@@ -27,7 +27,12 @@ public class TodoApplication extends WebSecurityConfigurerAdapter{
             .logout(l -> l
                 .logoutSuccessUrl("/").permitAll()
             )
-            .oauth2Login();
+            .oauth2Login(o -> o
+                .failureHandler((request, response, exception) -> {
+                    request.getSession().setAttribute("error.message", exception.getMessage());
+                    // handler.onAuthenticationFailure(request, response, exception);
+                })
+            );
     }
 
 }

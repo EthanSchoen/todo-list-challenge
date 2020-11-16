@@ -39,7 +39,8 @@
             <tr th:each="list : ${lists}" th:id="${list.id}">
                 <td class="listcolumn" th:text="${list.name}"> </td>
                 <td class="opcolumn">
-                    <input type="button" value="Show List" class="selectButton" th:attr="onclick=|showList(${list.id})|">
+                    <input type="button" value="Show" class="selectButton" th:attr="onclick=|showList(${list.id})|">
+                    <input type="button" value="Remove" class="selectButton" th:attr="onclick=|removeList(${list.id})|">
                 </td>
             </tr>
         </table>

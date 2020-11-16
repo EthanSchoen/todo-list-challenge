@@ -1,10 +1,16 @@
 function logout() {
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/logout", true);
-    xhr.setRequestHeader(header, token);
-    xhr.send();
+    $.ajax({
+        type: "POST",
+        beforeSend: function(request) {
+            request.setRequestHeader(header, token);
+        },
+        url: "/logout",
+        success: function(data){
+            window.location.replace("/");
+        }
+    });
     $("#user").html('');
     $(".unauthenticated").show();
     $(".authenticated").hide();

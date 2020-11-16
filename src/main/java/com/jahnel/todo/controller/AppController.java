@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.util.MultiValueMap;
 
@@ -36,6 +37,7 @@ public class AppController {
 
     @GetMapping("/lists")
     public String taskLists() {
+        String usr_id = SecurityContextHolder.getContext().getAuthentication().getName();
         return "lists";
     }
 
