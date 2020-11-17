@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class TodoAppTests {
+public class oldfile {
     
     @Autowired
     private MockMvc mvc;
