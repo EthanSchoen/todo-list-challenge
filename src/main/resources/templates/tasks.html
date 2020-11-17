@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Todo-List</title>
+  <meta name="author" content="Ethan Schoen">
+  <meta name="description" content="Keep track of what you need todo">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <meta name="listId" th:content="${list.getListId()}"/>
+
+
+  <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/tasks.css}">
+  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+  <script th:src="@{/js/tasks.js}"></script>
+  <script th:src="@{/js/scripts.js}"></script>
+</head>
+
+<body>
+  <h1 th:utext="${list.getName()}">Todo List</h1>
+  <form th:action="@{/addTask}" method="POST" id="newtaskform">
+    <input type="hidden" name="listId" th:value="${list.getListId()}">
+    <input type="text" name="task" id="newtask">
+    <input class="btn btn-secondary" type="submit" value="Add Task">
+  </form>
+  <br>
+  <table id="list">
+    <colgroup>
+      <col span="1" style="width: 25px;">
+      <col span="1" style="width: 100%;">
+      <col span="1" style="width: 190px;">
+    </colgroup>
+    <tr>
+      <th class="taskcolumn" colspan="3">Tasks</th>
+    </tr>
+    <tr th:each="task : ${tasks}" th:id="${task.getTaskId()}">
+        <td> <input type="checkbox" class="taskCheckBox" th:checked="${task.complete}" th:attr="onclick=|taskCheck(${task.getTaskId()})|"> </td>
+        <td class="taskcolumn" th:style="${task.complete ? 'text-decoration:line-through;' : '' }" th:text="${task.task}"> </td>
+        <td class="opcolumn">
+            <input type="button" value="Edit" class="btn btn-secondary editButton" th:attr="onclick=|editRow(${task.getTaskId()})|">
+            <input type="button" value="Remove" class="btn btn-secondary removeButton" th:attr="onclick=|deleteRow(${task.getTaskId()})|">
+        </td>
+    </tr>
+  </table>
+  <br>
+  <a class="btn btn-primary" href="/lists" role="button">Back to Lists</a>
+  <button onClick="logout()" class="btn btn-primary">Logout</button>
+</body>
+</html>

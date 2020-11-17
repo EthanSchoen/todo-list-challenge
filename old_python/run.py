@@ -9,8 +9,7 @@ if not os.path.isdir('todo_app/data'):
 os.system('py.test')
 
 # create database if it doesn't exist
-if not os.path.isfile('todo_app/data/todo.db'):
-    db.create_all()
+db.create_all()
 
 print()
 print("Loading Todo app...")

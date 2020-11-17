@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>User Lists</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+        <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/lists.css}">
+        <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+        <script th:src="@{/js/scripts.js}"></script>
+        <script th:src="@{/js/lists.js}"></script>
+    </head>
+    <body>
+        <h1>Todo Lists</h1>
+        <br>
+        <form th:action="@{/addList}" method="POST" id="newlistform">
+          <input type="text" name="listName" id="newlist">
+          <input class="btn btn-secondary" type="submit" value="Add List">
+        </form>
+        <table id="task-list">
+            <colgroup>
+                <col span="1" style="width: 100%;">
+                <col span="1" style="width: 175px;">
+            </colgroup>
+            <tr>
+                <th class="table-title" colspan="2">Lists</th>
+            </tr>
+            <tr th:each="list : ${lists}" th:id="${list.getListId()}">
+                <td class="listcolumn" th:text="${list.getName()}"> </td>
+                <td class="opcolumn">
+                    <a class="btn btn-secondary" th:href="|/tasks?listId=${list.getListId()}|" role="button">Show</a>
+                    <button class="btn btn-secondary" th:attr="onclick=|removeList(${list.getListId()})|">Remove</button>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <button onClick="logout()" class="btn btn-primary">Logout</button>
+    </body>
+</html>

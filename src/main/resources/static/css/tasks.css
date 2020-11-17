@@ -1,0 +1,27 @@
+form input[type=text] {
+    width: calc(100% - 110px);
+    font-size:18px;
+}
+
+form input[type=button] {
+    width: 90px;
+    font-size:18px;
+}
+
+#newtaskform {
+    margin: 10px auto;
+}
+
+td.taskcolumn {
+    text-align: left;
+}
+
+.opcolumn input[type=button] {
+    font-size:18px;
+}
+
+.editTaskInput {
+    margin-left: 3px;
+    width: calc(100% - 6px);
+    font-size:18px;
+}
