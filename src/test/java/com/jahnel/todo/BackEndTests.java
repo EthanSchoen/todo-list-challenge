@@ -3,9 +3,12 @@ package com.jahnel.todo;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.jahnel.todo.model.Task;
+import com.jahnel.todo.model.TaskList;
 import com.jahnel.todo.repository.TaskListRepository;
 import com.jahnel.todo.repository.TaskRepository;
 import com.jahnel.todo.service.ITaskListService;
@@ -55,28 +58,31 @@ public class BackEndTests {
     @Autowired
     private TaskListRepository listRepository;
 
+    private static String usr1 = "1234567890";
     private static Map<String, Object> user1;
     static {
         user1 = new HashMap<>();
-        user1.put("name", "1234567890");
+        user1.put("login", usr1);
         user1.put("email", "testing@test.org");
-        user1.put("login", "xXtest_usernameXx");
-        user1.put("username", "Test Users Name");
+        user1.put("username", "xXtest_usernameXx");
+        user1.put("name", "Test Users Name");
     }
 
+    private static String usr2 = "0987654321";
     private static Map<String, Object> user2;
     static {
         user2 = new HashMap<>();
-        user2.put("name", "0987654321");
+        user2.put("login", usr2);
         user2.put("email", "other@test.org");
-        user2.put("login", "xXtest_otherXx");
-        user2.put("username", "Other Users Name");
+        user2.put("username", "xXtest_otherXx");
+        user2.put("name", "Other Users Name");
     }
+
+    private static String[] lists = new String[]{"Test list 1", "Test list 2", "Test list 3", "Test list 4"};
+    private static String[] tasks = new String[]{"Test task 1", "Test task 2", "Test task 3", "Test task 4"};
 
     @BeforeEach
     void setup() {
-        taskRepository.deleteAll();
-        listRepository.deleteAll();
     }
 
     @Test
@@ -84,9 +90,25 @@ public class BackEndTests {
         MockHttpSession session = userSession(1);
         mockmvc.perform(MockMvcRequestBuilders.get("/lists").session(session))
             .andExpect(status().isOk());
-        printLists();
-        addList("Test list 1", session);
-        printLists();
+        for( String t : lists ) {
+            addList(t, session);
+        }
+        session = userSession(2);
+        for( String t : lists ) {
+            addList(t, session);
+        }
+        printUser(usr1);
+        printUser(usr2);
+    }
+
+    @Test
+    public void testAddTask() throws Exception {
+        MockHttpSession session = userSession(1);
+        addTasksToAllLists(tasks, usr1, session);
+        session = userSession(2);
+        addTasksToAllLists(tasks, usr2, session);
+        printUser(usr1);
+        printUser(usr2);
     }
 
     private static String TOKEN_ATTR_NAME = "org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN";
@@ -110,7 +132,7 @@ public class BackEndTests {
             .andExpect(status().isOk());
         mockmvc.perform(MockMvcRequestBuilders.get("/user").session(session))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.username").value("Test Users Name"));
+            .andExpect(jsonPath("$.name").value("Test Users Name"));
         mockmvc.perform(MockMvcRequestBuilders.get("/lists").session(session))
             .andExpect(status().isOk());
 
@@ -118,8 +140,14 @@ public class BackEndTests {
 
         mockmvc.perform(MockMvcRequestBuilders.get("/user").session(session))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.username").value("Other Users Name"));
+            .andExpect(jsonPath("$.name").value("Other Users Name"));
     }
+
+/****************************************************************************************************************
+ * 
+ *  Utility Methods
+ * 
+ ****************************************************************************************************************/
 
     private void addList(String name, MockHttpSession session) throws Exception {
         mockmvc.perform(MockMvcRequestBuilders.post("/addList")
@@ -130,6 +158,25 @@ public class BackEndTests {
                 .content(StandardCharsets.UTF_8.encode("listName=" + name).array()))
             .andExpect(redirectedUrl("lists"))
             .andExpect(status().is3xxRedirection());
+    }
+
+    private void addTask(Long id, String task, MockHttpSession session) throws Exception {
+        mockmvc.perform(MockMvcRequestBuilders.post("/addTask")
+                .session(session)
+                .sessionAttr(TOKEN_ATTR_NAME, csrfToken)
+                .param(csrfToken.getParameterName(), csrfToken.getToken())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content(StandardCharsets.UTF_8.encode("listId=" + id + "&task=" + task).array()))
+            .andExpect(redirectedUrl("tasks?listId=" + id))
+            .andExpect(status().is3xxRedirection());
+    }
+
+    private void addTasksToAllLists(String[] tlist, String usr, MockHttpSession session) throws Exception {
+        for( TaskList l : listService.findAllUser(usr) ){
+            for( String t : tlist ){
+                addTask(l.getListId(), t, session);
+            }
+        }
     }
 
     private static MockHttpSession userSession(int u) {
@@ -145,9 +192,16 @@ public class BackEndTests {
         return session;
     }
 
-    private void printLists() {
-        System.out.println("All lists: " + listService.findAll());
-        System.out.println("User 1 lists: " + listService.findAllUser("1234567890"));
-        System.out.println("User 2 lists: " + listService.findAllUser("0987654321"));
+    private void printUser(String id) {
+        // System.out.println("User: " + id );
+        for( TaskList l : listService.findAllUser(id) ){
+            System.out.println(l.getListId() + "\t" + l.getUser() + "\t" + l.getName() + ":");
+            System.out.println("-----------------------------------------------------------");
+            for ( Task t : taskService.findAllInList(l) ){
+                System.out.println("\t\t\t" + " " + t.getTask() + " | " + ((t.getComplete()) ? "completed" : "incomplete"));
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 }
