@@ -23,12 +23,12 @@
 
 <body>
   <h1 th:utext="${list.getName()}">Todo List</h1>
+  <br>
   <form th:action="@{/addTask}" method="POST" id="newtaskform">
     <input type="hidden" name="listId" th:value="${list.getListId()}">
     <input type="text" name="task" id="newtask">
     <input class="btn btn-secondary" type="submit" value="Add Task">
   </form>
-  <br>
   <table id="list">
     <colgroup>
       <col span="1" style="width: 25px;">

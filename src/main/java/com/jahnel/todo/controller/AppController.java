@@ -76,6 +76,18 @@ public class AppController {
         return "tasks";
     }
 
+    @GetMapping("/listEmpty")
+    @ResponseBody
+    public Map<String, Object> checkList(@RequestParam String listId) {
+        // Use listId from URL param to validate User owns list
+        TaskList list = listService.validateUserAndGetList(listId);
+        // return access denied page if listId is invalid for user
+        if( list == null ){ Collections.singletonMap("empty", false); }
+        // Return if list is empty
+        return Collections.singletonMap("empty", taskService.findAllInList(list).isEmpty());
+    }
+
+
     @PostMapping("/addList")
     public String addList(@RequestBody MultiValueMap<String,String> form) {
         // Get User's ID
