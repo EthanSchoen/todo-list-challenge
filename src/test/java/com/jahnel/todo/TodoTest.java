@@ -31,6 +31,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -201,6 +202,32 @@ public class TodoTest {
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             System.out.println();
+        }
+    }
+
+    @Test
+    public void testEmptyListCheck() throws Exception {
+        MockHttpSession session = userSession(1);
+        for( TaskList l : listService.findAllUser(usr1) ){
+            MvcResult result = mockmvc.perform(MockMvcRequestBuilders.get("/listEmpty?listId="+l.getListId())
+                                        .session(session)
+                                        .sessionAttr(TOKEN_ATTR_NAME, csrfToken)
+                                        .param(csrfToken.getParameterName(), csrfToken.getToken()))
+                                    .andExpect(status().isOk())
+                                    .andReturn();
+            assert result.getResponse().getContentAsString().contains("false");
+            assert !result.getResponse().getContentAsString().contains("true");
+        }
+        taskRepo.deleteAll();
+        for( TaskList l : listService.findAllUser(usr1) ){
+            MvcResult result = mockmvc.perform(MockMvcRequestBuilders.get("/listEmpty?listId="+l.getListId())
+                                        .session(session)
+                                        .sessionAttr(TOKEN_ATTR_NAME, csrfToken)
+                                        .param(csrfToken.getParameterName(), csrfToken.getToken()))
+                                    .andExpect(status().isOk())
+                                    .andReturn();
+            assert !result.getResponse().getContentAsString().contains("false");
+            assert result.getResponse().getContentAsString().contains("true");
         }
     }
 
