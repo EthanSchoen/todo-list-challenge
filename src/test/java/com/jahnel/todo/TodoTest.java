@@ -34,7 +34,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK,
@@ -58,7 +57,7 @@ public class TodoTest {
     @Autowired
     private TaskListRepository listRepo;
 
-    private boolean debugPrintAll = true;
+    private boolean debugPrintAll = false;
 
     private static String usr1 = "1234567890";
     private static Map<String, Object> user1;
