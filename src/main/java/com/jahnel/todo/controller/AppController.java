@@ -67,7 +67,7 @@ public class AppController {
         // Use listId from URL param to validate User owns list
         TaskList list = listService.validateUserAndGetList(listId);
         // return access denied page if listId is invalid for user
-        if( list == null ){ return "error"; }
+        if( list == null ){ return "noAccess"; }
         // Get list of tasks for requested list
         var tasks = (List<Task>) taskService.findAllInList(list);
         // pass data to model
@@ -104,7 +104,7 @@ public class AppController {
         // Use listId from JSON data to validate User owns list
         TaskList list = listService.validateUserAndGetList(result.get("listId").toString());
         // return access denied page if listId is invalid for user
-        if( list == null ){ return "error"; }
+        if( list == null ){ return "noAccess"; }
         // delete requested list
         listRepository.deleteById(list.getListId());
         return "redirect:lists";
@@ -115,7 +115,7 @@ public class AppController {
         // Use listId from form data to validate User owns list
         TaskList list = listService.validateUserAndGetList(form.get("listId").get(0).toString());
         // return access denied page if listId is invalid for user
-        if( list == null ){ return "error"; }
+        if( list == null ){ return "noAccess"; }
         // create new task for user on requested list
         taskRepository.save(new Task(form.get("task").get(0), false, list));
         return "redirect:tasks?listId=" + list.getListId();
@@ -128,7 +128,7 @@ public class AppController {
         // Use listId from JSON data to validate User owns list
         TaskList list = listService.validateUserAndGetList(result.get("listId").toString());
         // return access denied page if listId is invalid for user
-        if( list == null ){ return "error"; }
+        if( list == null ){ return "noAccess"; }
         // delete requested task
         taskRepository.deleteById(((Number) result.get("taskId")).longValue());
         return "redirect:tasks?listId=" + list.getListId();
@@ -141,7 +141,7 @@ public class AppController {
         // Use listId from JSON data to validate User owns list
         TaskList list = listService.validateUserAndGetList(result.get("listId").toString());
         // return access denied page if listId is invalid for user
-        if( list == null ){ return "error"; }
+        if( list == null ){ return "noAccess"; }
         // find requested task
         Task target = taskRepository.findById(((Number) result.get("taskId")).longValue()).get();
         // edit task according to JSON data
@@ -158,7 +158,7 @@ public class AppController {
         // Use listId from JSON data to validate User owns list
         TaskList list = listService.validateUserAndGetList(result.get("listId").toString());
         // return access denied page if listId is invalid for user
-        if( list == null ){ return "error"; }
+        if( list == null ){ return "noAccess"; }
         // find target task
         Task target = taskRepository.findById(((Number) result.get("taskId")).longValue()).get();
         // mark task as opposite of current state
