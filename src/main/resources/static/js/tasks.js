@@ -9,6 +9,11 @@ function editRow(rowUID) {
     button.attr("class", "btn btn-secondary doneButton");
     button.attr("onclick", "editDone("+rowUID+")");
     button.attr("value", "Done");
+    // Switch remove button to cancel button
+    var button = $("#"+rowUID+" .opcolumn .removeButton");
+    button.attr("class", "btn btn-secondary cancelButton");
+    button.attr("onclick", "window.location.reload()");
+    button.attr("value", "Cancel");
 }
 
 function editDone(rowUID) {
